@@ -3,10 +3,10 @@
   "id": "ccsurvivors",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Clovercraft Survivors",
+  "description": "A mod for running the Clovercraft Survivors game mode",
   "authors": [
-    "Me!"
+    "Martin Sheeks"
   ],
   "contact": {
     "homepage": "https://clovercraft.gg/",
@@ -31,8 +31,5 @@
     "fabric": "*",
     "minecraft": "1.18.x",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
