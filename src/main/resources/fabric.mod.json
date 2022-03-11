@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "ccsurvivors",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -9,21 +9,21 @@
     "Me!"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://clovercraft.gg/",
+    "sources": "https://github.com/clovercraft/survivors"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/ccsurvivors/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "gg.clovercraft.survivors.SurvivorsMod"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "ccsurvivors.mixins.json"
   ],
 
   "depends": {
