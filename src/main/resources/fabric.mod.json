@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "gg.clovercraft.survivors.SurvivorsMod"
+    ],
+    "server": [
+      "gg.clovercraft.survivors.SurvivorServerMod"
     ]
   },
   "mixins": [
