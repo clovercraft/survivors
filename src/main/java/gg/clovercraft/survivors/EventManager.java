@@ -10,12 +10,9 @@ import org.slf4j.Logger;
 
 public class EventManager {
 
-    private Logger LOGGER;
-    private Data DB;
-    private PlayerManager PLAYERS;
+    private final PlayerManager PLAYERS;
 
-    public EventManager( Logger logger, PlayerManager players ) {
-        LOGGER = logger;
+    public EventManager( PlayerManager players ) {
         PLAYERS = players;
     }
 
@@ -34,6 +31,8 @@ public class EventManager {
     private void registerAttackEvent() {
         AttackEntityCallback.EVENT.register((player, world, hand, pos, direction) -> {
             LivingEntity target = player.getAttacking();
+            if( target == null ) return ActionResult.PASS;
+
             if( PLAYERS.attackAllowed( player, target ) )
                 return ActionResult.PASS;
             else

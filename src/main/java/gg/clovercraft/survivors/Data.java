@@ -9,22 +9,22 @@ import org.slf4j.Logger;
 
 public class Data {
 
-    private Path URL = null;
+    private final Path URL;
     private Connection CONN = null;
-    private Logger LOGGER = null;
+    private final Logger LOGGER;
     public ResultSet RESULT = null;
 
     public Data( Logger logger ) {
         LOGGER = logger;
         URL = FabricLoader.getInstance().getConfigDir().resolve( "survivorsdata.db" );
-        Boolean connected = connect();
+        boolean connected = connect();
         if( connected ) {
             migrate();
         }
     }
 
-    public boolean query( String sql ) {
-        return runSql( sql );
+    public void query( String sql ) {
+        runSql( sql );
     }
 
     public boolean next() {
@@ -48,7 +48,8 @@ public class Data {
     }
 
     private boolean connect() {
-        try( Connection CONN = DriverManager.getConnection( URL.toString() ) ) {
+        try( Connection conn = DriverManager.getConnection( URL.toString() ) ) {
+            CONN = conn;
             if ( CONN != null ) {
                 LOGGER.info( "Connected to DB" );
                 migrate();
@@ -62,15 +63,16 @@ public class Data {
     }
 
     private void migrate() {
-        String sql = "CREATE TABLE IF NOT EXISTS player (\n"
-                + "     id integer PRIMARY KEY, \n"
-                + "     uuid text NOT NULL,\n"
-                + "     name text NOT NULL,\n"
-                + "     lives INTEGER NOT NULL, \n"
-                + "     isHunter  INTEGER NOT NULL DEFAULT 0, \n"
-                + "     isVampire INTEGER NOT NULL DEFAULT 0, \n"
-                + "     isSpartan INTEGER NOT NULL DEFAULT 0, \n"
-                + ");";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS player (
+                     id integer PRIMARY KEY,\s
+                     uuid text NOT NULL,
+                     name text NOT NULL,
+                     lives INTEGER NOT NULL,\s
+                     isHunter  INTEGER NOT NULL DEFAULT 0,\s
+                     isVampire INTEGER NOT NULL DEFAULT 0,\s
+                     isSpartan INTEGER NOT NULL DEFAULT 0,\s
+                );""";
         if( runSql( sql ) ) {
             LOGGER.info( "Successfully migrated DB" );
         }
@@ -78,9 +80,12 @@ public class Data {
 
     private boolean runSql( String sql ) {
         boolean success = false;
-        try (Statement stmt = CONN.createStatement()) {
-            success = stmt.execute(sql);
-            RESULT = stmt.getResultSet();
+        try {
+            assert CONN != null;
+            try (Statement stmt = CONN.createStatement()) {
+                success = stmt.execute(sql);
+                RESULT = stmt.getResultSet();
+            }
         } catch ( SQLException e ) {
             LOGGER.error( "DB Error: " );
             LOGGER.error( e.getMessage() );

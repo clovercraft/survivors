@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class SurvivorPlayer {
 
-    private PlayerEntity player;
+    private final PlayerEntity player;
 
     public Integer id;
     public String uuid;
@@ -18,7 +18,7 @@ public class SurvivorPlayer {
     public Boolean vampire;
     public Boolean spartan;
 
-    private long lastAttacked = 0;
+    private long lastAttacked;
     private static final long defendingCooldown = 600;
 
     public SurvivorPlayer( PlayerEntity PLAYER ) {

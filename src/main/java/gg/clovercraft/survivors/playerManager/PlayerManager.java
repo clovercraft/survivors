@@ -10,8 +10,8 @@ import java.util.HashMap;
 
 public class PlayerManager {
 
-    private Data DB;
-    private Logger LOGGER;
+    private final Data DB;
+    private final Logger LOGGER;
 
     private HashMap<String, SurvivorPlayer> survivors;
 
@@ -68,7 +68,7 @@ public class PlayerManager {
         SurvivorPlayer survivor = getRegisteredSurvivor( player );
         SurvivorPlayer target = getRegisteredSurvivor( (PlayerEntity) entity );
 
-        boolean allowed = false;
+        boolean allowed;
 
         // can the attacking player initiate hostility?
         if( survivor.isHostile() ) {

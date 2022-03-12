@@ -10,17 +10,14 @@ public class SurvivorServerMod implements DedicatedServerModInitializer {
 
     public static final String NAMESPACE = "ccsurvivors";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
-    private Data DB;
-    private PlayerManager players;
-    private EventManager events;
 
     @Override
     public void onInitializeServer() {
         LOGGER.info( "Loading CC Survivors Mod" );
 
-        DB = new Data( LOGGER );
-        players = new PlayerManager( LOGGER, DB );
-        events = new EventManager( LOGGER, players );
+        Data DB = new Data( LOGGER );
+        PlayerManager players = new PlayerManager( LOGGER, DB );
+        EventManager events = new EventManager( players );
         events.registerEvents();
     }
 }
