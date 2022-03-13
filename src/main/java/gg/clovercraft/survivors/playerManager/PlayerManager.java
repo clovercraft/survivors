@@ -3,10 +3,15 @@ package gg.clovercraft.survivors.playerManager;
 import gg.clovercraft.survivors.util.Data;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerManager {
 
@@ -30,6 +35,55 @@ public class PlayerManager {
 
     public void saveRegisteredSurvivor( SurvivorPlayer survivor ) {
         survivors.replace( survivor.uuid, survivor );
+    }
+
+    public boolean attackAllowed( PlayerEntity player, LivingEntity entity ) {
+
+        // is the target not a player?
+        if( ! entity.isPlayer() ) return true;
+
+        SurvivorPlayer survivor = getRegisteredSurvivor( player );
+        SurvivorPlayer target = getRegisteredSurvivor( (PlayerEntity) entity );
+
+        boolean allowed;
+
+        // can the attacking player initiate hostility?
+        if( survivor.isHostile() ) {
+            allowed = true;
+            target.setDefending();
+            saveRegisteredSurvivor( target );
+        } else {
+            allowed = survivor.isDefending();
+        }
+
+        return allowed;
+    }
+
+    public void handlePlayerDeath( ServerPlayerEntity player ) {
+        LivingEntity attacker = player.getAttacker();
+        if( attacker.isPlayer() ) {
+            SurvivorPlayer survivor = getRegisteredSurvivor( (PlayerEntity) attacker );
+            // if they're the hunter, we can cure them
+            if( survivor.hunter ) {
+                survivor.hunter = false;
+                player.sendMessage( Text.of( "You have been cured!" ), false );
+                saveRegisteredSurvivor( survivor );
+            }
+
+            // if they're the vampire, give them an additional life
+            if( survivor.vampire ) {
+                survivor.lives++;
+                player.sendMessage( Text.of( "You have claimed an additional life." ), false );
+                saveRegisteredSurvivor( survivor );
+            }
+        }
+
+        SurvivorPlayer survivor = getRegisteredSurvivor( (PlayerEntity) player );
+        survivor.lives--;
+        if ( survivor.lives == 0 ) {
+            player.changeGameMode( GameMode.SPECTATOR );
+        }
+        saveRegisteredSurvivor( survivor );
     }
 
     private SurvivorPlayer loadSurvivor( PlayerEntity player ) {
@@ -58,27 +112,5 @@ public class PlayerManager {
             LOGGER.warn( e.getMessage() );
         }
         return survivor;
-    }
-
-    public boolean attackAllowed( PlayerEntity player, LivingEntity entity ) {
-
-        // is the target not a player?
-        if( ! entity.isPlayer() ) return true;
-
-        SurvivorPlayer survivor = getRegisteredSurvivor( player );
-        SurvivorPlayer target = getRegisteredSurvivor( (PlayerEntity) entity );
-
-        boolean allowed;
-
-        // can the attacking player initiate hostility?
-        if( survivor.isHostile() ) {
-            allowed = true;
-            target.setDefending();
-            saveRegisteredSurvivor( target );
-        } else {
-            allowed = survivor.isDefending();
-        }
-
-        return allowed;
     }
 }
