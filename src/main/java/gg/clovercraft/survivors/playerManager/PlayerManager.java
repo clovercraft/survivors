@@ -1,6 +1,6 @@
 package gg.clovercraft.survivors.playerManager;
 
-import gg.clovercraft.survivors.Data;
+import gg.clovercraft.survivors.util.Data;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.slf4j.Logger;

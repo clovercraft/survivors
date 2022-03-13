@@ -29,6 +29,8 @@ public class SurvivorsMod implements ModInitializer {
 		Registry.register( Registry.STATUS_EFFECT, new Identifier( NAMESPACE, "spartan" ), SPARTAN_STATUS );
 		LOGGER.info( "Registered status effects..." );
 
+
+
 	}
 
 }
